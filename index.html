@@ -449,8 +449,11 @@
 
             // Call ML API for ABSA analysis
             try {
-                // REPLACE THIS URL WITH YOUR ML API ENDPOINT
-                const ML_API_ENDPOINT = 'https://your-ml-api.com/analyze';
+                // REPLACE THIS WITH YOUR CLOUDFLARE TUNNEL URL FROM COLAB
+                // It will look like: https://xxxx-xx-xx-xx-xx.trycloudflare.com
+                const ML_API_ENDPOINT = 'https://turner-oils-fighters-been.trycloudflare.com/analyze';
+                
+                console.log('Sending review to ABSA API:', reviewData);
                 
                 const response = await fetch(ML_API_ENDPOINT, {
                     method: 'POST',
@@ -460,8 +463,15 @@
                     body: JSON.stringify(reviewData)
                 });
 
-                const absaResults = await response.json();
-                console.log('ABSA Analysis Results:', absaResults);
+                const apiResponse = await response.json();
+                console.log('ABSA Analysis Results:', apiResponse);
+                
+                // Extract the actual ABSA data from response
+                const absaResults = {
+                    sentiment: apiResponse.sentiment,
+                    aspects: apiResponse.aspects,
+                    raw: apiResponse.raw_analysis
+                };
 
                 // Store in memory with ABSA results
                 reviewData.absa = absaResults;
